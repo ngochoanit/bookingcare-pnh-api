@@ -3,11 +3,10 @@
  */
 
 import express from 'express'
+import { homeController } from '../controllers/homeController'
 const router = express.Router()
 const initWebRoutes = (app) => {
-    router.get('/', (req, res) => {
-        return res.send('bookingcare-api')
-    })
+    router.get('/', homeController.getHomePage)
     return app.use('/', router)
 }
 export default initWebRoutes
