@@ -59,12 +59,29 @@ const putCRUD = async (req, res) => {
     try {
         const data = req.body
         const userUpdated = await CRUDService.updateUserData(data)
-        console.log(userUpdated)
         return res.redirect('get-crud')
     }
     catch (err) {
         console.log(err)
     }
 }
+//[post] delete user
+const deleteCRUD = async (req, res) => {
+    try {
+        const userId = req.query.id
+        if (userId) {
+            const userDeleted = await CRUDService.deleteUserById(userId)
+            console.log(userDeleted)
+            return res.redirect('get-crud')
+        }
+        return res.redirect('get-crud')
 
-export const homeController = { getHomePage, getCRUD, postCRUD, displayCRUD, getEditCRUD, putCRUD }
+    }
+    catch (err) {
+        console.log(err)
+    }
+    return res.send('hello delete form homecontrolle')
+}
+
+
+export const homeController = { getHomePage, getCRUD, postCRUD, displayCRUD, getEditCRUD, putCRUD, deleteCRUD }
