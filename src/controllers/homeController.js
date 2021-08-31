@@ -20,7 +20,18 @@ const getCRUD = (req, res) => {
 //[post] CRUD
 const postCRUD = async (req, res) => {
     const message = await CRUDService.createNewUser(req.body)
-    console.log(message)
     return res.send('post crud from server')
 }
-export const homeController = { getHomePage, getCRUD, postCRUD }
+//[get] get user
+const displayCRUD = async (req, res) => {
+    try {
+        const data = await CRUDService.getAllUser()
+        return res.render('displayCrud.ejs', { data: data })
+    }
+    catch (err) {
+        console.error(err)
+    }
+
+}
+
+export const homeController = { getHomePage, getCRUD, postCRUD, displayCRUD }

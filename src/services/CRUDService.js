@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs'
 import db from '../models/index'
 
 var salt = bcrypt.genSaltSync(10);
-
+//Create new user
 const createNewUser = async (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -12,7 +12,7 @@ const createNewUser = async (data) => {
                 password: hashPasswordFromBcrypt,
                 firstName: data.firstName,
                 lastName: data.lastName,
-                address: !!data.address,
+                address: data.address,
                 gender: data.gender === '1' ? 1 : 0,
                 roleId: data.roleId,
                 phoneNumber: data.phoneNumber,
@@ -24,6 +24,7 @@ const createNewUser = async (data) => {
         }
     })
 }
+// hash password
 const hashUserPassword = (password) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -35,5 +36,18 @@ const hashUserPassword = (password) => {
         }
     })
 }
-
-export const CRUDService = { createNewUser }
+//get all user
+const getAllUser = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const users = db.User.findAll({
+                raw: true,
+            })
+            resolve(users)
+        }
+        catch (err) {
+            reject(err)
+        }
+    })
+}
+export const CRUDService = { createNewUser, getAllUser }
