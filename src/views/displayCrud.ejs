@@ -19,39 +19,42 @@
 </head>
 
 <body>
-    <table class="table">
+    <table class="table table-bordered text-center">
         <thead>
             <tr>
                 <th scope="col">Email</th>
                 <th scope="col">Name</th>
-                <th scope="col">Address</th>
                 <th scope="col">Phone Number</th>
+                <th scope="col">Address</th>
                 <th scope="col">Sex</th>
+                <th scope="col">Action</th>
             </tr>
         </thead>
         <tbody>
-
-            <% console.log(data) %>
-                <% data.forEach(function(user){ %>
-                    <tr>
-                        <td>
-                            <%= user.email %>
-                        </td>
-                        <td>
-                            <%= user.firstName %>
-                                <%= user.lastName %>
-                        </td>
-                        <td>
-                            <%= user.phoneNumber %>
-                        </td>
-                        <td>
-                            <%= user.address %>
-                        </td>
-                        <td>
-                            <%= user.gender===1? 'Male' : 'Female' %>
-                        </td>
-                    </tr>
-                    <% }); %>
+            <% data.forEach(function(user){ %>
+                <tr>
+                    <td>
+                        <%= user.email %>
+                    </td>
+                    <td>
+                        <%= user.firstName %>
+                            <%= user.lastName %>
+                    </td>
+                    <td>
+                        <%= user.phoneNumber %>
+                    </td>
+                    <td>
+                        <%= user.address %>
+                    </td>
+                    <td>
+                        <%= user.gender===1? 'Male' : 'Female' %>
+                    </td>
+                    <td>
+                        <a class="btn btn-primary mr-2" href="/edit-crud?id=<%=user.id%>">Edit</a>
+                        <a class="btn btn-danger" href="/delete-crud?id=<%=user.id%>">Delete</a>
+                    </td>
+                </tr>
+                <% }); %>
         </tbody>
     </table>
 </body>

@@ -50,4 +50,40 @@ const getAllUser = () => {
         }
     })
 }
-export const CRUDService = { createNewUser, getAllUser }
+const getUserInfoById = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const user = await db.User.findOne({
+                where: { id: userId },
+                raw: true
+            })
+            if (user) {
+                resolve(user)
+            }
+            else {
+                resolve({})
+            }
+        }
+        catch (err) {
+            reject(err)
+        }
+    })
+}
+const updateUserData = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const userId = data.id;
+            delete data.userId;
+            const userUpdated = await db.User.update({ ...data }, {
+                where: {
+                    id: userId,
+                },
+                raw: true
+            });
+            resolve(userUpdated)
+        } catch (err) {
+            reject(err)
+        }
+    })
+}
+export const CRUDService = { createNewUser, getAllUser, getUserInfoById, updateUserData }

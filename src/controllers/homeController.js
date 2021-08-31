@@ -1,5 +1,6 @@
 import db from '../models/index'
 import { CRUDService } from '../services/CRUDService'
+import { isEmpty } from 'lodash'
 // [get] home
 const getHomePage = async (req, res) => {
     try {
@@ -31,7 +32,39 @@ const displayCRUD = async (req, res) => {
     catch (err) {
         console.error(err)
     }
-
+}
+//[get] get user by id
+const getEditCRUD = async (req, res) => {
+    try {
+        const userId = req.query.id
+        if (userId) {
+            const userData = await CRUDService.getUserInfoById(userId)
+            if (isEmpty(userData)) {
+                return res.redirect('get-crud')
+            }
+            else {
+                return res.render('editCrud.ejs', { userData })
+            }
+        }
+        else {
+            return res.send('Not Found')
+        }
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+//[get] get user by id
+const putCRUD = async (req, res) => {
+    try {
+        const data = req.body
+        const userUpdated = await CRUDService.updateUserData(data)
+        console.log(userUpdated)
+        return res.redirect('get-crud')
+    }
+    catch (err) {
+        console.log(err)
+    }
 }
 
-export const homeController = { getHomePage, getCRUD, postCRUD, displayCRUD }
+export const homeController = { getHomePage, getCRUD, postCRUD, displayCRUD, getEditCRUD, putCRUD }
