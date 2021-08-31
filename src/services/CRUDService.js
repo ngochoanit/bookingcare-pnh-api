@@ -86,4 +86,20 @@ const updateUserData = (data) => {
         }
     })
 }
-export const CRUDService = { createNewUser, getAllUser, getUserInfoById, updateUserData }
+const deleteUserById = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const userDeleted = await db.User.destroy({
+                where: {
+                    id: userId,
+                },
+                raw: true
+            });
+
+            resolve(userDeleted)
+        } catch (err) {
+            reject(err)
+        }
+    })
+}
+export const CRUDService = { createNewUser, getAllUser, getUserInfoById, updateUserData, deleteUserById }
