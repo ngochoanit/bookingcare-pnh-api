@@ -82,6 +82,12 @@ const deleteCRUD = async (req, res) => {
     }
     return res.send('hello delete form homecontrolle')
 }
-
-
-export const homeController = { getHomePage, getCRUD, postCRUD, displayCRUD, getEditCRUD, putCRUD, deleteCRUD }
+export const homeController = {
+    getHomePage,
+    getCRUD,
+    postCRUD,
+    displayCRUD,
+    getEditCRUD,
+    putCRUD,
+    deleteCRUD,
+}
