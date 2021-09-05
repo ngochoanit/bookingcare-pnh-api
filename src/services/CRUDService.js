@@ -74,6 +74,9 @@ const updateUserData = (data) => {
         try {
             const userId = data.id;
             delete data.userId;
+            const user = await db.User.findOne({
+                where: { id: userId }
+            })
             const userUpdated = await db.User.update({ ...data }, {
                 where: {
                     id: userId,
