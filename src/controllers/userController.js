@@ -7,13 +7,13 @@ const handleLogin = async (req, res) => {
     if (!email || !password) {
         return res.status(500).json({
             errCode: 1,
-            message: 'Missing inputs parameter'
+            errMessage: 'Missing inputs parameter'
         })
     }
     const userData = await userService.handleUserLogin(email, password)
     return res.status(200).json({
         errCode: userData.errCode,
-        message: userData.errMessage,
+        errMessage: userData.errMessage,
         user: userData.user ? userData.user : {}
 
     })
@@ -46,7 +46,7 @@ const handleEditUser = async (req, res) => {
     if (!req.body.id) {
         return res.status(200).json({
             errCode: 1,
-            message: 'Missing required parameter'
+            errMessagege: 'Missing required parameter'
         })
     }
     const data = req.body
@@ -58,7 +58,7 @@ const handleDeleteUser = async (req, res) => {
     if (!req.body.id) {
         return res.status(200).json({
             errCode: 1,
-            message: 'Missing required parameter'
+            errMessage: 'Missing required parameter'
         })
     }
     const message = await userService.deleteUser(req.body.id)

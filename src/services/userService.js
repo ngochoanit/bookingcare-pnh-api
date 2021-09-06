@@ -104,11 +104,10 @@ const createNewUser = (data) => {
             if (check) {
                 return resolve({
                     errCode: 1,
-                    message: 'Your email is already used. Please try another email'
+                    errMessage: 'Your email is already used. Please try another email'
                 })
             }
             else {
-
                 const hashPasswordFromBcrypt = await hashUserPassword(data.password)
                 await db.User.create({
                     email: data.email,
@@ -122,7 +121,7 @@ const createNewUser = (data) => {
                 })
                 resolve({
                     errCode: 0,
-                    message: "OK"
+                    errMessage: "OK"
                 })
             }
         }
@@ -154,8 +153,8 @@ const editUser = (data) => {
             })
             if (!user) {
                 resolve({
-                    error: 2,
-                    message: `The user isn't is exist`
+                    errCode: 2,
+                    errMessage: `The user isn't is exist`
                 })
             }
             const userUpdated = await db.User.update({ ...data }, {
@@ -164,8 +163,8 @@ const editUser = (data) => {
                 }
             });
             resolve({
-                error: 0,
-                message: `OK`
+                errCode: 0,
+                errMessage: `OK`
             })
         } catch (err) {
             reject(err)
@@ -181,8 +180,8 @@ const deleteUser = (userId) => {
             })
             if (!user) {
                 resolve({
-                    error: 2,
-                    message: `The user isn't is exist`
+                    errCode: 2,
+                    errMessage: `The user isn't is exist`
                 })
             }
             await db.User.destroy({
@@ -191,15 +190,14 @@ const deleteUser = (userId) => {
                 }
             })
             resolve({
-                error: 0,
-                message: `OK`
+                errCode: 0,
+                errMessage: `OK`
             })
         }
         catch (err) {
             reject(err)
         }
     })
-
 }
 export const userService = {
     handleUserLogin,
