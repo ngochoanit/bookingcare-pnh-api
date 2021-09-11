@@ -14,7 +14,7 @@ const handleLogin = async (req, res) => {
     return res.status(200).json({
         errCode: userData.errCode,
         errMessage: userData.errMessage,
-        user: userData.user ? userData.user : {}
+        userInfo: userData.userInfo ? userData.userInfo : {}
 
     })
 }
@@ -64,10 +64,24 @@ const handleDeleteUser = async (req, res) => {
     const message = await userService.deleteUser(req.body.id)
     return res.status(200).json(message)
 }
+//handle get all code
+const handleGetAllCode = async (req, res) => {
+    try {
+        const data = await userService.getAllCodeService(req.body.type)
+        return res.status(200).json(data)
+    } catch (err) {
+        console.log("Get all code error", err)
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server"
+        })
+    }
+}
 export const userController = {
     handleLogin,
     handleGetAllUsers,
     handleCreateNewUser,
     handleEditUser,
-    handleDeleteUser
+    handleDeleteUser,
+    handleGetAllCode
 }

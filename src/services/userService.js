@@ -12,7 +12,7 @@ const handleUserLogin = (email, password) => {
                 //compare password
                 const user = await db.User.findOne({
                     where: { email: email },
-                    attributes: ['email', 'roleId', 'password'],
+                    attributes: ['email', 'roleId', 'password', 'firstName', 'lastName'],
                     raw: true
                 })
                 if (user) {
@@ -22,7 +22,7 @@ const handleUserLogin = (email, password) => {
                         userData.errCode = 0
                         userData.errMessage = `OK`
                         delete user.password
-                        userData.user = user
+                        userData.userInfo = user
                     }
                     else {
                         userData.errCode = 3
@@ -199,10 +199,36 @@ const deleteUser = (userId) => {
         }
     })
 }
+//handle get all code
+const getAllCodeService = (typeInput) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const res = {}
+            if (!typeInput) {
+                res.errCode = 1
+                res.errMessage = "Missing required parameter!"
+            }
+            else {
+
+                const allCode = await db.Allcode.findAll({
+                    where: { type: typeInput }
+                })
+                res.errCode = 0
+                res.errMessage = "OK"
+                res.allCode = allCode
+            }
+            resolve(res)
+        }
+        catch (err) {
+            reject
+        }
+    })
+}
 export const userService = {
     handleUserLogin,
     getAllUsers,
     createNewUser,
     editUser,
-    deleteUser
+    deleteUser,
+    getAllCodeService
 }
