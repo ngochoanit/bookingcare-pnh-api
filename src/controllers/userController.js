@@ -67,7 +67,7 @@ const handleDeleteUser = async (req, res) => {
 //handle get all code
 const handleGetAllCode = async (req, res) => {
     try {
-        const data = await userService.getAllCodeService(req.body.type)
+        const data = await userService.getAllCodeService(req.query.type)
         return res.status(200).json(data)
     } catch (err) {
         console.log("Get all code error", err)

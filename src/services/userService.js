@@ -215,7 +215,7 @@ const getAllCodeService = (typeInput) => {
                 })
                 res.errCode = 0
                 res.errMessage = "OK"
-                res.allCode = allCode
+                res.data = allCode
             }
             resolve(res)
         }
@@ -224,6 +224,7 @@ const getAllCodeService = (typeInput) => {
         }
     })
 }
+
 export const userService = {
     handleUserLogin,
     getAllUsers,
