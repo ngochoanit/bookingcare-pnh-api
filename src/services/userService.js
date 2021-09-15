@@ -110,14 +110,8 @@ const createNewUser = (data) => {
             else {
                 const hashPasswordFromBcrypt = await hashUserPassword(data.password)
                 await db.User.create({
-                    email: data.email,
+                    ...data,
                     password: hashPasswordFromBcrypt,
-                    firstName: data.firstName,
-                    lastName: data.lastName,
-                    address: data.address,
-                    gender: data.gender === '1' ? 1 : 0,
-                    roleId: data.roleId,
-                    phoneNumber: data.phoneNumber,
                 })
                 resolve({
                     errCode: 0,

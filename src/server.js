@@ -27,10 +27,12 @@ app.use(cors({ origin: true }))
 //     // Pass to next layer of middleware
 //     next();
 // });
-//config app
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
 
+//config app
+// app.use(bodyParser.json())
+// app.use(bodyParser.urlencoded({  }))
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 viewEngine(app)
 initWebRoutes(app)
 
