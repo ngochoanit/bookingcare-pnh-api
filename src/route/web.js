@@ -5,6 +5,7 @@
 import express from 'express'
 import { homeController } from '../controllers/homeController'
 import { userController } from '../controllers/userController'
+import { doctorController } from '../controllers/doctorController'
 const router = express.Router()
 const initWebRoutes = (app) => {
     router.get('/', homeController.getHomePage)
@@ -22,6 +23,7 @@ const initWebRoutes = (app) => {
     router.delete('/api/delete-user', userController.handleDeleteUser)
 
     router.get('/api/get-all-code', userController.handleGetAllCode)
+    router.get('/api/get-top-doctor-home', doctorController.handleGetTopDoctorHome)
     return app.use('/', router)
 }
 export default initWebRoutes
