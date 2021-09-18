@@ -29,6 +29,96 @@ const getTopDoctorHome = (limit) => {
         }
     })
 }
+// handle get all doctor
+const getAllDoctorsService = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const doctors = await db.User.findAll({
+                where: { roleId: 'R2' },
+                attributes: {
+                    exclude: ['password', 'image']
+                }
+            })
+            resolve({
+                errCode: 0,
+                errMessage: "Get all doctor successfully",
+                data: doctors
+            })
+        }
+        catch (e) {
+            reject(e)
+        }
+    })
+}
+// handle get all doctor
+const postInforDoctorSevice = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!data.contentHTML || !data.contentMarkdown) {
+                resolve({
+                    errCode: 1,
+                    errMessage: "Missing parameter input required",
+                })
+            }
+            else {
+                await db.Markdown.create({
+                    ...data
+                })
+                resolve({
+                    errCode: 0,
+                    errMessage: "Create infor doctor successfully",
+                })
+            }
+        }
+        catch (e) {
+            reject(e)
+        }
+    })
+}
+// get deatail doctor by id 
+const getDetailDoctorByIdService = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!id) {
+                resolve({
+                    errCode: 3,
+                    errMessage: "Missing required parameter"
+                })
+            }
+            else {
+                const data = await db.User.findOne({
+                    where: {
+                        id: id
+                    },
+                    attributes: {
+                        exclude: ['password', 'image']
+                    },
+                    include: [
+                        {
+                            model: db.Markdown,
+                            attributes: ['description', 'contentMarkdown', 'contentHTML']
+                        },
+                        {
+                            model: db.Allcode, as: 'positionData', attributes: ['valueEn', 'valueVi']
+                        },
+                    ],
+                    raw: true,
+                    nest: true
+                })
+                resolve({
+                    errCode: 0,
+                    errMessage: "Get detail doctor by id successfully ",
+                    data: data
+                })
+            }
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
 export const doctorService = {
-    getTopDoctorHome
+    getTopDoctorHome,
+    getAllDoctorsService,
+    postInforDoctorSevice,
+    getDetailDoctorByIdService
 }
