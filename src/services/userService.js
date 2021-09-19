@@ -203,7 +203,6 @@ const getAllCodeService = (typeInput) => {
                 res.errMessage = "Missing required parameter!"
             }
             else {
-
                 const allCode = await db.Allcode.findAll({
                     where: { type: typeInput }
                 })

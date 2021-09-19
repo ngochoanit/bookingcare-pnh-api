@@ -54,16 +54,30 @@ const getAllDoctorsService = () => {
 const postInforDoctorSevice = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (!data.contentHTML || !data.contentMarkdown) {
+            if (!data.doctorId || !data.contentHTML || !data.contentMarkdown || !data.action) {
                 resolve({
                     errCode: 1,
                     errMessage: "Missing parameter input required",
                 })
             }
+
             else {
-                await db.Markdown.create({
-                    ...data
-                })
+                if (data.action === "CREATE") {
+                    await db.Markdown.create({
+                        ...data
+                    })
+                }
+                else if (data.action === "EDIT") {
+                    const doctorId = data.doctorId
+                    delete data.doctorId
+                    await db.Markdown.update(
+                        { ...data },
+                        {
+                            where: {
+                                doctorId: doctorId
+                            }
+                        })
+                }
                 resolve({
                     errCode: 0,
                     errMessage: "Create infor doctor successfully",
@@ -86,12 +100,12 @@ const getDetailDoctorByIdService = (id) => {
                 })
             }
             else {
-                const data = await db.User.findOne({
+                let data = await db.User.findOne({
                     where: {
                         id: id
                     },
                     attributes: {
-                        exclude: ['password', 'image']
+                        exclude: ['password']
                     },
                     include: [
                         {
@@ -102,9 +116,16 @@ const getDetailDoctorByIdService = (id) => {
                             model: db.Allcode, as: 'positionData', attributes: ['valueEn', 'valueVi']
                         },
                     ],
-                    raw: true,
+                    raw: false,
                     nest: true
                 })
+
+                if (data && data.image) {
+                    data.image = new Buffer(data.image, 'base64').toString('binary')
+                }
+                if (!data) {
+                    data = {}
+                }
                 resolve({
                     errCode: 0,
                     errMessage: "Get detail doctor by id successfully ",
