@@ -55,9 +55,24 @@ const handlegetDetailDoctorById = async (req, res) => {
         })
     }
 }
+//create multi schedule
+const handleBulkCreateSchedule = async (req, res) => {
+    try {
+        const response = await doctorService.bulkCreateScheduleService(req.body)
+        return res.status(200).json(response)
+    }
+    catch (err) {
+        console.log(err)
+        res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server"
+        })
+    }
+}
 export const doctorController = {
     handleGetTopDoctorHome,
     handleGetAllDoctors,
     handlePostInforDoctor,
-    handlegetDetailDoctorById
+    handlegetDetailDoctorById,
+    handleBulkCreateSchedule
 }

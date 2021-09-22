@@ -27,6 +27,7 @@ const initWebRoutes = (app) => {
     router.get('/api/get-all-doctors', doctorController.handleGetAllDoctors)
     router.post('/api/save-infor-doctor', doctorController.handlePostInforDoctor)
     router.get('/api/get-detail-doctor-by-id', doctorController.handlegetDetailDoctorById)
+    router.post('/api/bulk-create-schedule', doctorController.handleBulkCreateSchedule)
     return app.use('/', router)
 }
 export default initWebRoutes
