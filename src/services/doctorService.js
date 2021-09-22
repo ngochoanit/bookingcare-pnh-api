@@ -1,4 +1,7 @@
-const db = require("../models/index")
+import _ from "lodash"
+import db from "../models/index"
+require("dotenv").config()
+const MAX_NUMBER_SCHEDULE = process.env.MAX_NUMBER_SCHEDULE
 
 const getTopDoctorHome = (limit) => {
     console.log('service')
@@ -137,9 +140,57 @@ const getDetailDoctorByIdService = (id) => {
         }
     })
 }
+//create multi schedule
+const bulkCreateScheduleService = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!data && !data.arrSchedule && !data.doctorId && data.date) {
+
+                resolve({
+                    errCode: 1,
+                    errMessage: "Missing required parameter"
+                })
+            }
+            else {
+                let schedule = data.arrSchedule
+                const doctorId = data.doctorId
+                const date = data.date
+                if (schedule && schedule.length > 0) {
+                    schedule = schedule.map((item) => {
+                        item.maxNumber = Number(MAX_NUMBER_SCHEDULE)
+                        return item
+                    })
+                }
+                const findAll = await db.Schedule.findAll({
+                    where: {
+                        doctorId: doctorId,
+                        date: date,
+                    },
+                    attributes: ['doctorId', 'date', 'timeType', 'maxNumber'],
+                    raw: true
+                })
+                findAll.map((item) => {
+                    item.date = item.date.getTime()
+                    return item
+                })
+                const toCreate = _.differenceWith(schedule, findAll, _.isEqual)
+                if (toCreate) {
+                    await db.Schedule.bulkCreate(toCreate)
+                }
+                resolve({
+                    errCode: 0,
+                    errMessage: "OK"
+                })
+            }
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
 export const doctorService = {
     getTopDoctorHome,
     getAllDoctorsService,
     postInforDoctorSevice,
-    getDetailDoctorByIdService
+    getDetailDoctorByIdService,
+    bulkCreateScheduleService
 }
