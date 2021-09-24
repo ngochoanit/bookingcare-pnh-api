@@ -1,10 +1,10 @@
 import _ from "lodash"
+import moment from "moment"
 import db from "../models/index"
 require("dotenv").config()
 const MAX_NUMBER_SCHEDULE = process.env.MAX_NUMBER_SCHEDULE
 
 const getTopDoctorHome = (limit) => {
-    console.log('service')
     return new Promise(async (resolve, reject) => {
         try {
             const users = await db.User.findAll({
@@ -155,6 +155,7 @@ const bulkCreateScheduleService = (data) => {
                 let schedule = data.arrSchedule
                 const doctorId = data.doctorId
                 const date = data.date
+
                 if (schedule && schedule.length > 0) {
                     schedule = schedule.map((item) => {
                         item.maxNumber = Number(MAX_NUMBER_SCHEDULE)
@@ -170,7 +171,7 @@ const bulkCreateScheduleService = (data) => {
                     raw: true
                 })
                 findAll.map((item) => {
-                    item.date = item.date.getTime()
+                    item.date = moment(item.date).valueOf()
                     return item
                 })
                 const toCreate = _.differenceWith(schedule, findAll, _.isEqual)
@@ -187,10 +188,54 @@ const bulkCreateScheduleService = (data) => {
         }
     })
 }
+//create multi schedule
+const getScheduleDoctorByDateService = (doctorId, date) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!doctorId || !date) {
+
+                resolve({
+                    errCode: 1,
+                    errMessage: "Missing required parameter"
+                })
+            }
+
+            else {
+                const dateConvert = moment.unix(date / 1000)
+                let data = await db.Schedule.findAll({
+                    where: {
+                        doctorId: doctorId,
+                        date: dateConvert,
+                    },
+                    include: [
+
+                        { model: db.Allcode, as: 'timeTypeData', attributes: ['valueEn', 'valueVi'] },
+
+                    ],
+                    nested: true,
+                    raw: false
+
+                })
+                if (!data) {
+                    data = []
+                }
+
+                resolve({
+                    errCode: 0,
+                    errMessage: "OK",
+                    data: data
+                })
+            }
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
 export const doctorService = {
     getTopDoctorHome,
     getAllDoctorsService,
     postInforDoctorSevice,
     getDetailDoctorByIdService,
-    bulkCreateScheduleService
+    bulkCreateScheduleService,
+    getScheduleDoctorByDateService
 }
