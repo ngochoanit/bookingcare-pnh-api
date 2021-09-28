@@ -57,24 +57,64 @@ const getAllDoctorsService = () => {
 const postInforDoctorSevice = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (!data.doctorId || !data.contentHTML || !data.contentMarkdown || !data.action) {
+
+            if (!data.doctorId || !data.contentHTML
+                || !data.contentMarkdown || !data.action
+                || !data.selectedPrice || !data.selectedPayment
+                || !data.selectedProvince || !data.nameClinic
+                || !data.addressClinic) {
                 resolve({
                     errCode: 1,
                     errMessage: "Missing parameter input required",
                 })
             }
-
             else {
+                //upsert to markdown
+                const markdown = {
+                    doctorId: data.doctorId,
+                    contentHTML: data.contentHTML,
+                    contentMarkdown: data.contentMarkdown,
+                    description: data.description
+                }
+                const doctorId = data.doctorId
                 if (data.action === "CREATE") {
                     await db.Markdown.create({
-                        ...data
+                        ...markdown
                     })
                 }
                 else if (data.action === "EDIT") {
-                    const doctorId = data.doctorId
-                    delete data.doctorId
                     await db.Markdown.update(
-                        { ...data },
+                        { ...markdown },
+                        {
+                            where: {
+                                doctorId: doctorId
+                            }
+                        })
+                }
+                //upsert to doctor_infor
+                const doctorInforData = {
+                    doctorId: data.doctorId,
+                    priceId: data.selectedPrice,
+                    paymentId: data.selectedPayment,
+                    provinceId: data.selectedProvince,
+                    nameClinic: data.nameClinic,
+                    addressClinic: data.addressClinic,
+                    note: data.note,
+                }
+
+                const doctorInfor = await db.Doctor_infor.findOne({
+                    where: {
+                        doctorId: doctorId
+                    }
+                })
+                if (!doctorInfor) {
+                    await db.Doctor_infor.create({
+                        ...doctorInforData
+                    })
+                }
+                else {
+                    await db.Doctor_infor.update(
+                        { ...doctorInforData },
                         {
                             where: {
                                 doctorId: doctorId
