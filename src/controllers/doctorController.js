@@ -43,9 +43,21 @@ const handlePostInforDoctor = async (req, res) => {
         })
     }
 }
-const handlegetDetailDoctorById = async (req, res) => {
+const handleGetDetailDoctorById = async (req, res) => {
     try {
         const response = await doctorService.getDetailDoctorByIdService(req.query.id)
+        return res.status(200).json(response)
+    } catch (err) {
+        console.log(err)
+        res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server"
+        })
+    }
+}
+const handleGetExtraDoctorById = async (req, res) => {
+    try {
+        const response = await doctorService.getExtraDoctorByIdService(req.query.id)
         return res.status(200).json(response)
     } catch (err) {
         console.log(err)
@@ -87,7 +99,8 @@ export const doctorController = {
     handleGetTopDoctorHome,
     handleGetAllDoctors,
     handlePostInforDoctor,
-    handlegetDetailDoctorById,
+    handleGetDetailDoctorById,
     handleBulkCreateSchedule,
-    handleGetScheduleDoctorByDate
+    handleGetScheduleDoctorByDate,
+    handleGetExtraDoctorById
 }

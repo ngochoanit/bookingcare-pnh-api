@@ -158,6 +158,30 @@ const getDetailDoctorByIdService = (id) => {
                         {
                             model: db.Allcode, as: 'positionData', attributes: ['valueEn', 'valueVi']
                         },
+                        {
+                            model: db.Doctor_infor,
+                            attributes: {
+
+                                exclude: ['id', 'doctorId']
+                            },
+                            include: [
+                                {
+                                    model: db.Allcode,
+                                    as: 'priceTypeData',
+                                    attributes: ['valueEn', 'valueVi']
+                                },
+                                {
+                                    model: db.Allcode,
+                                    as: 'provinceTypeData',
+                                    attributes: ['valueEn', 'valueVi']
+                                },
+                                {
+                                    model: db.Allcode,
+                                    as: 'paymentTypeData',
+                                    attributes: ['valueEn', 'valueVi']
+                                }
+                            ]
+                        },
                     ],
                     raw: false,
                     nest: true
@@ -176,6 +200,7 @@ const getDetailDoctorByIdService = (id) => {
                 })
             }
         } catch (e) {
+            console.log(e)
             reject(e)
         }
     })
@@ -271,11 +296,65 @@ const getScheduleDoctorByDateService = (doctorId, date) => {
         }
     })
 }
+const getExtraDoctorByIdService = (doctorId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            console.log(doctorId)
+            if (!doctorId) {
+                resolve({
+                    errCode: 1,
+                    errMessage: "Missing required parameter"
+                })
+            }
+            else {
+                let data = await db.Doctor_infor.findOne({
+                    where: {
+                        doctorId: doctorId,
+                    },
+                    attributes: {
+                        exclude: ['id', 'doctorId']
+                    },
+                    include: [
+                        {
+                            model: db.Allcode,
+                            as: 'priceTypeData',
+                            attributes: ['valueEn', 'valueVi']
+                        },
+                        {
+                            model: db.Allcode,
+                            as: 'provinceTypeData',
+                            attributes: ['valueEn', 'valueVi']
+                        },
+                        {
+                            model: db.Allcode,
+                            as: 'paymentTypeData',
+                            attributes: ['valueEn', 'valueVi']
+                        }
+                    ],
+                    raw: false,
+                    nest: true
+                })
+                if (!data) {
+                    data = {}
+                }
+                resolve({
+                    errCode: 0,
+                    errMessage: "OK",
+                    data: data
+                })
+            }
+        }
+        catch (e) {
+            reject(e)
+        }
+    })
+}
 export const doctorService = {
     getTopDoctorHome,
     getAllDoctorsService,
     postInforDoctorSevice,
     getDetailDoctorByIdService,
     bulkCreateScheduleService,
-    getScheduleDoctorByDateService
+    getScheduleDoctorByDateService,
+    getExtraDoctorByIdService
 }

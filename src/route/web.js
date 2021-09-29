@@ -26,9 +26,10 @@ const initWebRoutes = (app) => {
     router.get('/api/get-top-doctor-home', doctorController.handleGetTopDoctorHome)
     router.get('/api/get-all-doctors', doctorController.handleGetAllDoctors)
     router.post('/api/save-infor-doctor', doctorController.handlePostInforDoctor)
-    router.get('/api/get-detail-doctor-by-id', doctorController.handlegetDetailDoctorById)
+    router.get('/api/get-detail-doctor-by-id', doctorController.handleGetDetailDoctorById)
     router.post('/api/bulk-create-schedule', doctorController.handleBulkCreateSchedule)
     router.get('/api/get-schedule-doctor-by-date', doctorController.handleGetScheduleDoctorByDate)
+    router.get('/api/get-extra-doctor-by-id', doctorController.handleGetExtraDoctorById)
     return app.use('/', router)
 }
 export default initWebRoutes
