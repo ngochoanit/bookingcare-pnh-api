@@ -95,6 +95,20 @@ const handleGetScheduleDoctorByDate = async (req, res) => {
         })
     }
 }
+//gey schedule doctor by date
+const handleGetProfileDoctorById = async (req, res) => {
+    try {
+        const response = await doctorService.getProfileeDoctorByDateService(req.query.doctorId)
+        return res.status(200).json(response)
+    }
+    catch (err) {
+        console.log(err)
+        res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server"
+        })
+    }
+}
 export const doctorController = {
     handleGetTopDoctorHome,
     handleGetAllDoctors,
@@ -102,5 +116,6 @@ export const doctorController = {
     handleGetDetailDoctorById,
     handleBulkCreateSchedule,
     handleGetScheduleDoctorByDate,
-    handleGetExtraDoctorById
+    handleGetExtraDoctorById,
+    handleGetProfileDoctorById
 }
