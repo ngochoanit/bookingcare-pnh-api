@@ -261,7 +261,6 @@ const bulkCreateScheduleService = (data) => {
 const getScheduleDoctorByDateService = (doctorId, date) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log(doctorId, date)
             if (!doctorId || !date) {
 
                 resolve({
@@ -303,7 +302,6 @@ const getScheduleDoctorByDateService = (doctorId, date) => {
 const getExtraDoctorByIdService = (doctorId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log(doctorId)
             if (!doctorId) {
                 resolve({
                     errCode: 1,
@@ -357,7 +355,6 @@ const getExtraDoctorByIdService = (doctorId) => {
 const getProfileeDoctorByDateService = (doctorId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log(doctorId)
             if (!doctorId) {
                 resolve({
                     errCode: 1,

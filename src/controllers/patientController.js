@@ -12,6 +12,22 @@ const postPatientBookAppointment = async (req, res) => {
         })
     }
 }
+const postVerifytBookAppointment = async (req, res) => {
+    try {
+        let infor = await patientService.postVerifytBookAppointmentService(req.body)
+        return res.status(200).json(
+            infor
+        )
+    }
+    catch (err) {
+        console.log(err)
+        res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server"
+        })
+    }
+}
 export const patientController = {
-    postPatientBookAppointment
+    postPatientBookAppointment,
+    postVerifytBookAppointment
 }
