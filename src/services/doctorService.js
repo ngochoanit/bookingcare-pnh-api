@@ -8,8 +8,11 @@ const getTopDoctorHome = (limit) => {
     return new Promise(async (resolve, reject) => {
         try {
             const users = await db.User.findAll({
+
                 limit: limit,
-                roelId: "R2",
+                where: {
+                    roleId: "R2"
+                },
                 order: [['updatedAt', 'DESC']],
                 attributes: {
                     exclude: ['password']
@@ -258,6 +261,7 @@ const bulkCreateScheduleService = (data) => {
 const getScheduleDoctorByDateService = (doctorId, date) => {
     return new Promise(async (resolve, reject) => {
         try {
+            console.log(doctorId, date)
             if (!doctorId || !date) {
 
                 resolve({
@@ -276,11 +280,10 @@ const getScheduleDoctorByDateService = (doctorId, date) => {
                     include: [
 
                         { model: db.Allcode, as: 'timeTypeData', attributes: ['valueEn', 'valueVi'] },
-
+                        { model: db.User, as: 'doctorData', attributes: ['firstName', 'lastName'] },
                     ],
                     nested: true,
                     raw: false
-
                 })
                 if (!data) {
                     data = []

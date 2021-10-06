@@ -1,10 +1,12 @@
 import db from "../models/index"
 require("dotenv").config()
+import { EmailService } from './Emailservice'
 const postPatientBookAppointmentService = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log(data)
-            if (!data.email || !data.doctorId || !data.timeType) {
+
+            if (!data.email || !data.doctorId || !data.timeType || !data.fullName ||
+                !data.doctorName || !data.language) {
 
                 resolve({
                     errCode: 1,
@@ -13,6 +15,7 @@ const postPatientBookAppointmentService = (data) => {
             }
             else {
                 //upsert
+
                 const [user, created] = await db.User.findOrCreate({
                     where: { email: data.email },
                     defaults: {
@@ -21,8 +24,17 @@ const postPatientBookAppointmentService = (data) => {
                     },
                     raw: true
                 })
-                console.log("patient service ", user.id)
+
                 if (user) {
+                    await EmailService.sendSimpleEmail({
+                        reciverEmail: user.email,
+                        patientName: data.fullName,
+                        time: data.timeString,
+                        doctorName: data.doctorName,
+                        language: data.language,
+                        redirectLink: "https://www.facebook.com/pnh.it/"
+                    })
+                    console.log(user)
                     await db.Booking.findOrCreate({
                         where: { patientId: user.id },
                         defaults: {
