@@ -7,6 +7,7 @@ import { homeController } from '../controllers/homeController'
 import { userController } from '../controllers/userController'
 import { doctorController } from '../controllers/doctorController'
 import { patientController } from '../controllers/patientController'
+import { specialtyController } from '../controllers/specialtyController'
 const router = express.Router()
 const initWebRoutes = (app) => {
     router.get('/', homeController.getHomePage)
@@ -36,6 +37,9 @@ const initWebRoutes = (app) => {
     router.post('/api/patient-book-appointment', patientController.postPatientBookAppointment)
 
     router.post('/api/verify-booking-appointment', patientController.postVerifytBookAppointment)
+
+    router.post('/api/create-new-specialty', specialtyController.postCreateNewSpecialty)
+
     return app.use('/', router)
 }
 export default initWebRoutes
