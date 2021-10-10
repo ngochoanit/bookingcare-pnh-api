@@ -15,7 +15,25 @@ const postCreateNewSpecialty = async (req, res) => {
         )
     }
 }
+const getAllSpecialty = async (req, res) => {
+    try {
+        const response = await specialtyService.getAllSpecialtyService()
+        res.status(200).json(
+            response
+        )
+    }
+    catch (e) {
+        console.log(e.message)
+        res.status(200).json(
+            {
+                errCode: -1,
+                errMessage: "Error from server"
+            }
+        )
+    }
+}
 
 export const specialtyController = {
-    postCreateNewSpecialty
+    postCreateNewSpecialty,
+    getAllSpecialty
 }

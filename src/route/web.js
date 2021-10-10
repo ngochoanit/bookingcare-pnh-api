@@ -40,6 +40,8 @@ const initWebRoutes = (app) => {
 
     router.post('/api/create-new-specialty', specialtyController.postCreateNewSpecialty)
 
+    router.get('/api/get-all-specialty', specialtyController.getAllSpecialty)
+
     return app.use('/', router)
 }
 export default initWebRoutes
