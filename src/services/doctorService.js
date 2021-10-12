@@ -57,19 +57,39 @@ const getAllDoctorsService = () => {
         }
     })
 }
+//chec required fields
+const checkRequiredFields = (data) => {
+    const arrFields = ['doctorId', 'contentHTML', 'contentMarkdown', 'action', 'selectedPrice', 'selectedPayment', 'selectedProvince', 'nameClinic', 'addressClinic', 'specialtyId']
+    let isValid = true;
+    let element = []
+    arrFields.forEach((item) => {
+        if (item in data === false) {
+            isValid = false;
+            element.push(item)
+            return { isValid, element };
+        }
+        else {
+            if (!data[item]) {
+
+                isValid = false
+                element.push(item)
+                return { isValid, element }
+            }
+        }
+
+    })
+    return { isValid, element }
+}
 // handle get all doctor
 const postInforDoctorSevice = (data) => {
+
     return new Promise(async (resolve, reject) => {
         try {
-
-            if (!data.doctorId || !data.contentHTML
-                || !data.contentMarkdown || !data.action
-                || !data.selectedPrice || !data.selectedPayment
-                || !data.selectedProvince || !data.nameClinic
-                || !data.addressClinic) {
+            const checkObj = checkRequiredFields(data)
+            if (!checkObj.isValid) {
                 resolve({
                     errCode: 1,
-                    errMessage: "Missing parameter input required",
+                    errMessage: `Missing parameter input required ${checkObj.element.join(',')}`,
                 })
             }
             else {
@@ -104,6 +124,8 @@ const postInforDoctorSevice = (data) => {
                     nameClinic: data.nameClinic,
                     addressClinic: data.addressClinic,
                     note: data.note,
+                    specialtyId: data.specialtyId,
+                    clinicId: data.clinicId,
                 }
 
                 const doctorInfor = await db.Doctor_infor.findOne({
