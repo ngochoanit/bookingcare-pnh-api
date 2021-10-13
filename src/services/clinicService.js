@@ -1,24 +1,30 @@
 import db from "../models/index"
 
-const postCreateNewSpecialtyService = (data) => {
+const postCreateNewClinicService = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (!data.name || !data.imageBase64 || !data.descriptionHtml || !data.descriptionMarkdown) {
+            if (
+                !data.name
+                || !data.address
+                || !data.imageBase64
+                || !data.descriptionHtml
+                || !data.descriptionMarkdown) {
                 resolve({
                     errCode: 1,
                     errMessage: "Missing parameter input required"
                 })
             }
             else {
-                await db.Specialty.create({
+                await db.Clinic.create({
                     name: data.name,
+                    address: data.address,
                     image: data.imageBase64,
                     descriptionMarkdown: data.descriptionMarkdown,
                     descriptionHtml: data.descriptionHtml
                 })
                 resolve({
                     errCode: 0,
-                    errMessage: "create new specialty successed"
+                    errMessage: "create new clinic successed"
                 })
             }
         } catch (err) {
@@ -27,10 +33,10 @@ const postCreateNewSpecialtyService = (data) => {
     })
 
 }
-const getAllSpecialtyService = () => {
+const getAllClinicService = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            let data = await db.Specialty.findAll({
+            let data = await db.Clinic.findAll({
 
                 attributes: {
                     exclude: ['descriptionHtml', 'descriptionMarkdown']
@@ -38,7 +44,10 @@ const getAllSpecialtyService = () => {
             })
             if (data && data.length > 0) {
                 data.map((item) => {
-                    item.image = new Buffer(item.image, 'base64').toString('binary')
+                    if (item.image) {
+
+                        item.image = new Buffer(item.image, 'base64').toString('binary')
+                    }
                     return item
                 })
             }
@@ -56,45 +65,22 @@ const getAllSpecialtyService = () => {
     })
 
 }
-const getDetailSpecialtyByIdService = (inputId, location) => {
+const getDetailClinicByIdService = (inputId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (inputId && location) {
+            if (inputId) {
                 let data = {}
-                if (location === 'ALL') {
-                    data = await db.Specialty.findOne({
-                        where: {
-                            id: Number(inputId),
-                        },
-                        attributes: ['descriptionHtml', 'descriptionMarkdown', 'image', 'name'],
-                        include: [
-                            { model: db.Doctor_infor, as: 'doctorData', attributes: ['doctorId'] }
-                        ],
-                        raw: false,
-                        nest: true
-                    })
-                }
-                else {
+                data = await db.Clinic.findOne({
+                    where: {
+                        id: Number(inputId),
+                    },
+                    include: [
+                        { model: db.Doctor_infor, as: 'doctorDataClinic', attributes: ['doctorId'] }
+                    ],
+                    raw: false,
+                    nest: true
+                })
 
-                    data = await db.Specialty.findOne({
-                        where: {
-                            id: inputId,
-                        },
-                        attributes: ['descriptionHtml', 'descriptionMarkdown', 'image'],
-                        include: [
-                            {
-                                model: db.Doctor_infor,
-                                as: 'doctorData',
-                                attributes: ['doctorId'],
-                                where: {
-                                    provinceId: location
-                                }
-                            }
-                        ],
-                        raw: false,
-                        nest: true
-                    })
-                }
                 if (!data) {
                     data = {}
                 }
@@ -120,8 +106,8 @@ const getDetailSpecialtyByIdService = (inputId, location) => {
         }
     })
 }
-export const specialtyService = {
-    postCreateNewSpecialtyService,
-    getAllSpecialtyService,
-    getDetailSpecialtyByIdService
+export const clinicService = {
+    postCreateNewClinicService,
+    getAllClinicService,
+    getDetailClinicByIdService
 }
