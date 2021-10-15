@@ -46,7 +46,7 @@ const getAllClinicService = () => {
                 data.map((item) => {
                     if (item.image) {
 
-                        item.image = new Buffer(item.image, 'base64').toString('binary')
+                        item.image = Buffer.from(item.image, 'base64').toString('binary')
                     }
                     return item
                 })
@@ -86,7 +86,7 @@ const getDetailClinicByIdService = (inputId) => {
                 }
                 else {
                     if (data.image) {
-                        data.image = new Buffer(data.image, 'base64').toString('binary')
+                        data.image = Buffer.from(data.image, 'base64').toString('binary')
                     }
                 }
                 resolve({

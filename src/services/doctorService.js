@@ -215,7 +215,7 @@ const getDetailDoctorByIdService = (id) => {
                 })
 
                 if (data && data.image) {
-                    data.image = new Buffer(data.image, 'base64').toString('binary')
+                    data.image = Buffer.from(data.image, 'base64').toString('binary')
                 }
                 if (!data) {
                     data = {}
@@ -432,7 +432,7 @@ const getProfileeDoctorByDateService = (doctorId) => {
                     data = {}
                 }
                 if (data && data.image) {
-                    data.image = new Buffer(data.image, 'base64').toString('binary')
+                    data.image = Buffer.from(data.image, 'base64').toString('binary')
                 }
                 resolve({
                     errCode: 0,
