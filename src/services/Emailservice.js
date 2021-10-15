@@ -57,6 +57,65 @@ const getBodyHtmlEmail = (dataSend) => {
     }
     return result
 }
+const sendAttachment = async (dataSend) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let transporter = nodemailer.createTransport({
+                host: "smtp.gmail.com",
+                port: 587,
+                secure: false, // true for 465, false for other ports
+                auth: {
+                    user: process.env.EMAIL_APP, // generated ethereal user
+                    pass: process.env.EMAIL_APP_PASSWORD, // generated ethereal password
+                },
+            });
+
+            // send mail with defined transport object
+            let info = await transporter.sendMail({
+                from: `"Booking Care" <${process.env.EMAIL_APP}>`, // sender address
+                to: dataSend.email, // list of receivers
+                subject: "KẾT QUẢ KHÁM BỆNH", // Subject line
+                html: getBodyHtmlEmailRemedy(dataSend), // html body
+                attachments: [{   // encoded string as an attachment
+                    filename: 'ketqua.png',
+                    path: dataSend.imageBase64,
+                    // encoding: 'base64'
+                },],
+            });
+            console.log("85/EmailService", info)
+            resolve()
+        }
+        catch (err) {
+            reject(err)
+        }
+    })
+    // create reusable transporter object using the default SMTP transport
+
+
+}
+const getBodyHtmlEmailRemedy = (dataSend) => {
+    let result = ''
+    if (dataSend && dataSend.language === "en") {
+        result = `
+        <h3>Dear ${dataSend.patientName}</h3>
+        <p>You received this email because you visited BookingCare</p>
+         <p>The results of the medical examination are sent in the attached file</p>
+         <div>Thank you very much!</div>
+        `
+    }
+    if (dataSend && dataSend.language === "vi") {
+        result = `
+        <h3>Xin Chào ${dataSend.patientName}</h3>
+        <p>Bạn nhận được email này vì đã khám bệnh ở BookingCare</p>
+        <p>Kết quả khám bệnh được gửi trong file đính kèm</p>
+        <div>Xin chân thành cảm ơn!</div>
+        `
+    }
+
+
+    return result
+}
 export const EmailService = {
-    sendSimpleEmail
+    sendSimpleEmail,
+    sendAttachment
 }

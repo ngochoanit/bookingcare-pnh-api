@@ -34,9 +34,10 @@ const initWebRoutes = (app) => {
     router.get('/api/get-schedule-doctor-by-date', doctorController.handleGetScheduleDoctorByDate)
     router.get('/api/get-extra-doctor-by-id', doctorController.handleGetExtraDoctorById)
     router.get('/api/get-profile-doctor-by-id', doctorController.handleGetProfileDoctorById)
+    router.get('/api/get-list-paytient-for-doctor', doctorController.getListPaytientForDoctor)
+    router.post('/api/send-remedy', doctorController.sendRemedy)
 
     router.post('/api/patient-book-appointment', patientController.postPatientBookAppointment)
-
     router.post('/api/verify-booking-appointment', patientController.postVerifytBookAppointment)
 
     router.post('/api/create-new-specialty', specialtyController.postCreateNewSpecialty)
@@ -46,6 +47,8 @@ const initWebRoutes = (app) => {
     router.post('/api/create-new-clinic', clinicController.postCreateNewClinic)
     router.get('/api/get-all-clinic', clinicController.getAllClinic)
     router.get('/api/get-detail-clinic-by-id', clinicController.getDetailClinicById)
+
+
     return app.use('/', router)
 }
 export default initWebRoutes

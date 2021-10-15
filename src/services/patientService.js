@@ -12,7 +12,7 @@ const postPatientBookAppointmentService = (data) => {
         try {
 
             if (!data.email || !data.doctorId || !data.timeType || !data.fullName ||
-                !data.doctorName || !data.language) {
+                !data.doctorName || !data.language || !data.address || !data.gender) {
 
                 resolve({
                     errCode: 1,
@@ -21,12 +21,15 @@ const postPatientBookAppointmentService = (data) => {
             }
             else {
                 //upsert
-
                 const [user, created] = await db.User.findOrCreate({
                     where: { email: data.email },
                     defaults: {
                         email: data.email,
-                        roleId: "R3"
+                        roleId: "R3",
+                        address: data.address,
+                        gender: data.gender,
+                        phoneNumber: data.phoneNumber,
+                        firstName: data.fullName,
                     },
                     raw: true
                 })
