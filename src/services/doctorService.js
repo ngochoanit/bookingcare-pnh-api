@@ -1,6 +1,7 @@
 import _ from "lodash"
 import moment from "moment"
 import db from "../models/index"
+import { EmailService } from "./Emailservice"
 require("dotenv").config()
 const MAX_NUMBER_SCHEDULE = process.env.MAX_NUMBER_SCHEDULE
 
@@ -445,6 +446,108 @@ const getProfileeDoctorByDateService = (doctorId) => {
         }
     })
 }
+const getListPaytientForDoctorService = (doctorId, date) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!doctorId || !date) {
+                resolve({
+                    errCode: 1,
+                    errMessage: "Missing required parameter"
+                })
+            }
+            else {
+                const dateConvert = moment.unix(date / 1000)
+                let data = await db.Booking.findAll({
+                    where: {
+                        doctorId: +doctorId,
+                        date: dateConvert,
+                        statusId: 'S2'
+
+                    },
+                    include: [
+                        {
+                            model: db.User,
+                            attributes: ['email', 'firstName', 'address', 'gender', 'phoneNumber'],
+                            as: 'patientData',
+                            include: [
+                                {
+                                    model: db.Allcode,
+                                    attributes: ['valueEn', 'valueVi'],
+                                    as: 'genderData'
+                                }
+                            ],
+                        },
+                        {
+                            model: db.Allcode,
+                            as: 'bookingTypeData',
+                            attributes: ['valueEn', 'valueVi']
+
+                        },
+                        {
+                            model: db.Allcode,
+                            as: 'bookingStatusData',
+                            attributes: ['valueEn', 'valueVi']
+
+                        }
+                    ],
+                    nest: true,
+                    raw: false
+                })
+                if (!data) {
+                    data = []
+                }
+                resolve({
+                    errCode: 0,
+                    errMessage: "OK",
+                    data: data
+                })
+            }
+        }
+        catch (e) {
+            reject(e)
+        }
+    })
+}
+const sendRemedyService = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            if (!data || !data.email || !data.patientId || !data.doctorId || !data.timeType) {
+                resolve({
+                    errCode: 1,
+                    errMessage: "Missing required parameter"
+                })
+            }
+            else {
+
+                //update paytient status
+                const appointment = await db.Booking.update(
+                    {
+                        statusId: "S3"
+                    },
+                    {
+                        where: {
+                            doctorId: Number(data.doctorId),
+                            patientId: Number(data.patientId),
+                            timeType: data.timeType
+                        }
+                    }
+
+                )
+                await EmailService.sendAttachment(data)
+                resolve({
+                    errCode: 0,
+                    errMessage: "OK",
+                })
+
+                // send email remedy
+            }
+        }
+        catch (e) {
+            reject(e)
+        }
+    })
+}
 export const doctorService = {
     getTopDoctorHome,
     getAllDoctorsService,
@@ -453,5 +556,7 @@ export const doctorService = {
     bulkCreateScheduleService,
     getScheduleDoctorByDateService,
     getExtraDoctorByIdService,
-    getProfileeDoctorByDateService
+    getProfileeDoctorByDateService,
+    getListPaytientForDoctorService,
+    sendRemedyService
 }
